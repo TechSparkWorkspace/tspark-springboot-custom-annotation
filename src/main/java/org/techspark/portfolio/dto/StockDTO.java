@@ -1,9 +1,10 @@
-package org.techspark.starter.portfolio.dto;
+package org.techspark.portfolio.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.techspark.annotation.ValidStockSymbol;
 
 @Getter
 @Setter
@@ -18,6 +19,7 @@ public class StockDTO {
     private String name;
 
     @NotBlank(message = "Ticker symbol is required")
+    @ValidStockSymbol // Custom annotation applied here
     @Schema(description = "Stock Ticker Symbol", example = "AAPL")
     private String tickerSymbol;
 

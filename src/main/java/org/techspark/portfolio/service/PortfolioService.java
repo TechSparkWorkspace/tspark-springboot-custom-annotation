@@ -1,16 +1,19 @@
-package org.techspark.starter.portfolio.service;
+package org.techspark.portfolio.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.techspark.starter.portfolio.dto.StockDTO;
-import org.techspark.starter.portfolio.entity.Stock;
-import org.techspark.starter.portfolio.mapper.StockMapper;
-import org.techspark.starter.portfolio.repository.PortfolioRepository;
+import org.techspark.annotation.TrackStockQuantityChange;
+import org.techspark.portfolio.dto.StockDTO;
+import org.techspark.portfolio.entity.Stock;
+import org.techspark.portfolio.mapper.StockMapper;
+import org.techspark.portfolio.repository.PortfolioRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PortfolioService {
@@ -38,6 +41,7 @@ public class PortfolioService {
         return stockMapper.toStockDTO(stock);
     }
 
+    @TrackStockQuantityChange
     public StockDTO updateStock(Long id, StockDTO stockDTO) {
         Stock existingStock = portfolioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Stock not found"));
@@ -46,6 +50,7 @@ public class PortfolioService {
         existingStock.setTickerSymbol(stockDTO.getTickerSymbol());
         existingStock.setQuantity(stockDTO.getQuantity());
 
+        log.debug("({}) quantity updated to (${})", stockDTO.getTickerSymbol(), stockDTO.getQuantity());
         return stockMapper.toStockDTO(portfolioRepository.save(existingStock));
     }
 
